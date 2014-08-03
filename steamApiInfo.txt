@@ -1,0 +1,21 @@
+Steam support question = 7257-UFZC-6317
+
+api key = 74A251B8EE2BED515308DCA521E4B6B9
+
+user id = 23654985, 76561198011435969 
+	http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=74A251B8EE2BED515308DCA521E4B6B9&vanityurl=23654985
+
+User stats data(dota 2): 
+	http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=570&key=74A251B8EE2BED515308DCA521E4B6B9&steamid=76561198011435969
+
+Hero IDs:
+	https://api.steampowered.com/IEconDOTA2_570/GetHeroes/v0001/?language=en&key=74A251B8EE2BED515308DCA521E4B6B9
+
+Specific match details: 
+	https://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/v001/?key=74A251B8EE2BED515308DCA521E4B6B9&format=json&match_id=749781023
+
+Valve api documentation
+	https://developer.valvesoftware.com/wiki/Steam_Web_API
+
+Player summeries: 
+	http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=74A251B8EE2BED515308DCA521E4B6B9&steamids=76561198011435969
