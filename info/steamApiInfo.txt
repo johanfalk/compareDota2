@@ -2,7 +2,7 @@ Steam support question = 7257-UFZC-6317
 
 api key = 74A251B8EE2BED515308DCA521E4B6B9
 
-user id = 23654985, 76561198011435969 
+user id: 23654985 = steam32ID, 76561198011435969 = steam64ID, 51170241 = account_id 
 	http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=74A251B8EE2BED515308DCA521E4B6B9&vanityurl=23654985
 
 User stats data(dota 2): 
@@ -14,8 +14,21 @@ Hero IDs:
 Specific match details: 
 	https://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/v001/?key=74A251B8EE2BED515308DCA521E4B6B9&format=json&match_id=749781023
 
-Valve api documentation
-	https://developer.valvesoftware.com/wiki/Steam_Web_API
-
 Player summeries: 
 	http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=74A251B8EE2BED515308DCA521E4B6B9&steamids=76561198011435969
+
+DotA2 economy schema: 
+	http://api.steampowered.com/IEconItems_570/GetSchema/v0001/?key=74A251B8EE2BED515308DCA521E4B6B9
+
+Lastest played matched:
+	https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/?key=74A251B8EE2BED515308DCA521E4B6B9&account_id=51170241
+
+
+Documentations:																	  
+__________________________________________________________________________________
+
+Valve api documentation:
+	https://developer.valvesoftware.com/wiki/Steam_Web_API
+
+dev.dota2.com api documentation:
+	http://dev.dota2.com/showthread.php?t=58317
