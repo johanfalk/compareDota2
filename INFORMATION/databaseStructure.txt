@@ -1,0 +1,21 @@
+DATABASE STRUCTURE:
+
+Match Details:
+	match_details_global					// Contains all data about the match and not the players
+	match_details_players					// Contains specific data for every player in that match
+
+Relations:
+	match_x_players: 						// Contains all the relations between a player and his/her matches
+
+Players:
+	players: 								// Contains players all different steam ID(64bit, 32bit, account_id)
+	players_summaries: 					// Contains data about thier profile
+
+Statistics:
+	player_statistics:						// Contains players average stats(etx Total gold earned) for all matches
+
+Items:
+	items									// Information about all ingame-vendor items
+
+Heroes:
+	heroes									// Information about every hero

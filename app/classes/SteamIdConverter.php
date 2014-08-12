@@ -3,13 +3,13 @@
 /**
  * Convert 64bit IDs to 32bit or the other way around. 
  */
-class IdConverter
+class SteamIdConverter
 {
 	/**
 	 * @param int $id
 	 * @return string 
 	 */
-	function __construct($id)
+	public static function convert($id)
 	{
 	    if (strlen($id) === 17)
 	    {
