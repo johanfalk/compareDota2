@@ -1,8 +1,6 @@
-Steam support question = 7257-UFZC-6317
-
 api key = 74A251B8EE2BED515308DCA521E4B6B9
 
-user id: 23654985 = steam32ID, 76561198011435969 = steam64ID, 51170241 = account_id 
+user id: 23654985 = steam32ID, 76561198011435969 = steam64ID, 51170241 = account_id(steam64 ID - 299067162755072) 
 	http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=74A251B8EE2BED515308DCA521E4B6B9&vanityurl=23654985
 
 User stats data(dota 2): 
