@@ -13,11 +13,19 @@ class SteamApi
 		$this->baseUrl = 'https://api.steampowered.com/';
 	}
 
-	public function getPlayerSummaries($steamID)
+	public function getPlayerSummaries($steamID, $option = 'all')
 	{
-		if(isset($steamID))
+		if(isset($steamID) && $option == 'all')
 		{
-			return json_decode(file_get_contents($this->baseUrl . 'ISteamUser/GetPlayerSummaries/v0002/?key=' . $this->key . '&steamids=' . $steamID));
+			$data =  json_decode(file_get_contents($this->baseUrl . 'ISteamUser/GetPlayerSummaries/v0002/?key=' . $this->key . '&steamids=' . $steamID));
+
+			return $data->response->players;
+		}
+		else if(isset($steamID) && is_int($option))
+		{
+			$data =  json_decode(file_get_contents($this->baseUrl . 'ISteamUser/GetPlayerSummaries/v0002/?key=' . $this->key . '&steamids=' . $steamID));
+
+			return array_shift($data->response->players);
 		}
 	}
 
