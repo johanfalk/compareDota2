@@ -11,4 +11,9 @@
 |
 */
 
-Route::get('/', array('uses' => 'StatsController@showPlayerStats'));
+
+Route::get('/', array('uses' => 'HomeController@showHomePage'));
+Route::get('/stats', array('uses' => 'StatsController@showPlayerStats'));
+
+// /match/{match_id}
+Route::get('/match', array('uses' => 'MatchController@showMatchDetails'));
