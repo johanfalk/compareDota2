@@ -2,29 +2,39 @@
 
 class SteamApi
 {
+	private $key;
 
-	public static function getPlayerSummaries($steamID)
+	private $baseUrl;
+
+	function __construct()
+	{
+		$this->key = '74A251B8EE2BED515308DCA521E4B6B9'; 
+
+		$this->baseUrl = 'https://api.steampowered.com/';
+	}
+
+	public function getPlayerSummaries($steamID)
 	{
 		if(isset($steamID))
 		{
-			return json_decode(file_get_contents('https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=74A251B8EE2BED515308DCA521E4B6B9&steamids=' . $steamID));
+			return json_decode(file_get_contents($this->baseUrl . 'ISteamUser/GetPlayerSummaries/v0002/?key=' . $this->key . '&steamids=' . $steamID));
 		}
 	}
 
-	public static function getMatchDetails($matchID)
+	public function getMatchDetails($matchID)
 	{
 
 		if(isset($matchID))
 		{
-			return json_decode(file_get_contents('https://api.steampowered.com/IDOTA2Match_570/GetMatchDetails/v001/?key=74A251B8EE2BED515308DCA521E4B6B9&format=json&match_id=' . $matchID));
+			return json_decode(file_get_contents($this->baseUrl . 'IDOTA2Match_570/GetMatchDetails/v001/?key=' . $this->key . '&format=json&match_id=' . $matchID));
 		}
 	}
 
-	public static function getMatchHistory($steamID)
+	public function getMatchHistory($steamID)
 	{
 		if(isset($steamID))
 		{
-			return json_decode(file_get_contents('https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/?key=74A251B8EE2BED515308DCA521E4B6B9&account_id=51170241' . $steamID));
+			return json_decode(file_get_contents($this->baseUrl . 'IDOTA2Match_570/GetMatchHistory/V001/?key=' . $this->key . '&account_id=51170241' . $steamID));
 		}
 	}
 }
