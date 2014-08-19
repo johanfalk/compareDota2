@@ -22,7 +22,7 @@ class SteamId
 
 	        $this->thirtyFour = substr($id, 3) - 61197960265728;
 	    }
-	    else
+	    else if(strlen($id) === 8)
 	    {
 	    	$this->thirtyFour = $id;
 
