@@ -11,9 +11,17 @@
 |
 */
 
+/**
+ * HomeController
+ */
+Route::get('/', 'HomeController@showHomePage');
 
-Route::get('/', array('uses' => 'HomeController@showHomePage'));
-Route::get('/stats', array('uses' => 'StatsController@showPlayerStats'));
+/**
+ * PlayerController
+ */
+Route::get('player/{steamid}', 'PlayerController@showPlayerSummeries');
 
-// /match/{match_id}
-Route::get('/match', array('uses' => 'MatchController@showMatchDetails'));
+/**
+ * MatchController
+ */
+Route::post('store-matches/{steamid}', 'MatchController@storeMatchesBySteamID');

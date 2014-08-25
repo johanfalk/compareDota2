@@ -3,8 +3,14 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Laravel PHP Framework</title>
+
+	{{ HTML::style('css/style.css') }}
+	{{ HTML::script('assets/jQuery.js') }}
+	{{ HTML::script('js/main.js') }}
+
 </head>
 <body>
+	@yield('header')
 	@yield('content')
 </body>
 </html>
