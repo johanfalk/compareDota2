@@ -1,6 +1,6 @@
 <?php
 
-use Dota\Api\DotaService;
+use Dota\Services\DotaService;
 
 class PlayerController extends BaseController {
 
@@ -18,13 +18,30 @@ class PlayerController extends BaseController {
 	 */
 	public function showPlayerSummeries($steamID)
 	{
-		if($profile = $this->dotaService->getSteamProfile($steamID)) 
+		if($playerSummeries = $this->dotaService->getPlayerSummeries($steamID))
 		{
-			return View::make('match.all', array(
-				'profile' => $profile,
-				'matches' => $this->dotaService->getPlayerMatches($steamID)
-			));
+			return View::make('match.all', array('playerSummeries', $playerSummeries));
 		}
-		return Redirect::to('/')->with('message', 'Retarded f*ck...');
+		return Redirect::to('/')->with('message', 'Invalid Steam ID');
+	}
+
+	/**
+	 * Store matches related to steam id by ajax request.
+	 * 
+	 * @param  int $steamID 
+	 * @return boolean
+	 */
+	public function loadPlayerSummeries($steamID)
+	{
+	 	if($playerSummeries = $this->dotaService->getPlayerSummeries($steamID))
+		{
+			return Response::json('Success');
+		}
+		return Response::json('Failed');
+	}
+
+	public function isValidID($id)
+	{
+		return true;
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 
-use Dota\Api\DotaService;
+use Dota\Services\DotaService;
 
 class MatchController extends BaseController {
 
@@ -11,22 +11,20 @@ class MatchController extends BaseController {
 		$this->dotaService = $dotaService;
 	}
 
-	/**
-	 * Store matches related to steam id by ajax request.
-	 * 
-	 * @param  int $steamid 
-	 * @return boolean
-	 */
-	public function storeMatchesBySteamID($steamid)
+	public function showMatchDetails($matchID)
 	{
-		if(Session::get('steamid') === $steamid)
+		if($match = 10) // $match = $this->dotaService->getMatchDetails($matchID)
 		{
-			return $this->dotaService->storeMatches($steamid);
-
-		}else if($this->dotaService->getSteamProfile($steamid))
-		{
-			return $this->dotaService->storeMatches($steamid);
+			return View::make('match.detail')->with('match', $match);
 		}
-		return 'false';
+		return Redirect::to('/')->with('message', 'Invalid match ID');
+	}
+
+	public function showComparedMatches($steamID1, $steamID2)
+	{
+		if($this->dotaService->isValidID($steamID1, $steamID2))
+		{
+			return 
+		}
 	}
 }

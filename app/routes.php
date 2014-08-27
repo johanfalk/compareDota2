@@ -20,8 +20,10 @@ Route::get('/', 'HomeController@showHomePage');
  * PlayerController
  */
 Route::get('player/{steamid}', 'PlayerController@showPlayerSummeries');
+Route::post('load-player/{steamid}', 'PlayerController@loadPlayerSummeries');
 
 /**
  * MatchController
  */
-Route::post('store-matches/{steamid}', 'MatchController@storeMatchesBySteamID');
+Route::get('match/{matchID}', 'MatchController@showMatchDetails');
+Route::get('match/{steamID1}/compare/{steamID2}', 'MatchController@showComparedMatches');
