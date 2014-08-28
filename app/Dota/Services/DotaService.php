@@ -50,44 +50,66 @@ class DotaService
 	 */
 	public function getSteamProfile($steamID)
 	{
-		$steamIDs = $this->getSteamIDs(); 
-
-		if(Session::has($steamIDs->profile))
+		if($steamIDs = $this->getSteamIDs($steamID))
 		{
-			return Session::get($steamIDs->profile);
-		}
-		if($profile = $this->dotaApi->oneProfile($steamID))
-		{
-			Session::put($steamIDs->profile, $profile);
+			if(Session::has($steamIDs->profileID))
+			{
+				return Session::get($steamIDs->profileID);
+			}
+			if($profile = $this->dotaApi->oneProfile($steamIDs->steam64ID))
+			{
+				Session::put($steamIDs->profileID, $profile);
 
-			return $profile;
+				return $profile;
+			}
 		}
 
 		return false;
 	}
 
+	/**
+	 * Convert one ID to different kinds of ID.
+	 * 
+	 * @param  int $steamID
+	 * @return T				false / object 
+	 */
 	public function getSteamIDs($steamID)
 	{
-		return new SteamIDConverter($steamID);
+		if(isset($steamID))
+		{
+			$steamIDs = new SteamIDConverter($steamID);
+
+			if($steamIDs->isValid)
+				return $steamIDs;
+		}
+
+		return false;
 	}
 
 	/**
 	 * Get player summeries and store it within a new ojbect.
 	 * 
 	 * @param  int $steamID
-	 * @return T          		False or object
+	 * @return T          		false / object
 	 */
 	public function getPlayerSummeries($steamID)
 	{
-		if($profile = $this->getSteamProfile($steamID)) 
+		if($steamIDs = $this->getSteamIDs($steamID))
 		{
-			$matches = $this->getPlayerMatches($steamID);
+			if(Cache::has($steamIDs->steam64ID))
+			{
+				return Cache::get($steamIDs->steam64ID);
+			}
+			else if($profile = $this->getSteamProfile($steamIDs->steam64ID)) 
+			{
+				$matches = $this->getPlayerMatches($steamIDs->steam64ID);
 
-			$player = new PLayer($steamID, $profile, $matches);
-		
-			Cache::put($steamID, $player, 20);
+				$player = new PLayer($steamIDs, $profile, $matches);
+			
+				Cache::put($steamIDs->$steam64ID, $player, 20);
 
-			return $player; 
+				return $player; 
+			}			
 		}
 	
 		return false;

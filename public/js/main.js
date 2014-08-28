@@ -1,22 +1,22 @@
 $(document).ready(function() {
-    $("#steamIdForm").on('submit', function(event) {
+    $("#steamIDForm").on('submit', function(event) {
 		event.preventDefault();
-		
-		var steamid = $('#steamid').val();
 
-    	if( typeof steamid == 'number') {
+		var steamID = $('#steamID').val();
+
+    	if(steamID) {
 
     		$('#loading-gif').css('display', 'block');
 
 			$.ajax({
-			   	url: "/compareDota2/public/load-player/" + steamid,
+			   	url: "/compareDota2/public/load-player/" + steamID,
 			    type: "post",
-			    data: steamid
+			    data: steamID
 			}).done(function(data) {
 				$('#loading-gif').css('display', 'none');
 
 				if(data === 'Success') {
-					var path = 'http://localhost/compareDota2/public/player/' + steamid;
+					var path = 'http://localhost/compareDota2/public/player/' + steamID;
 	  				window.location = path;
 				}
 			});

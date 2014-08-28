@@ -1,5 +1,7 @@
 <?php namespace Dota;
 
+use stdClass;
+
 /**
 * Store the summeries for one player.
 */
@@ -11,11 +13,7 @@ class Player
 
 	public $matches;
 
-	public $goldPerMin;
-
-	public $expPerMin;
-
-	public $healPerMin;
+	public $stats;
 
 	function __construct($id, $profile, $matches)
 	{
@@ -25,12 +23,22 @@ class Player
 
 		$this->matches = $matches;
 
-		$this->calculateAverageStats($matches);
+		$this->setAverageStats($matches);
+	}
+
+	private function setAverageStats($matches)
+	{
+		$stats = $this->calculateAverageStats($matches);
+
+		$this->stats = $stats;
 	}
 
 	private function calculateAverageStats($matches)
 	{
-		var_dump('calculateAverageStats');
-		return true;
+		$matchCount = count($matches);
+
+		$stats = new stdClass();
+
+		return $stats;
 	}
 }

@@ -19,11 +19,12 @@ Route::get('/', 'HomeController@showHomePage');
 /**
  * PlayerController
  */
-Route::get('player/{steamid}', 'PlayerController@showPlayerSummeries');
-Route::post('load-player/{steamid}', 'PlayerController@loadPlayerSummeries');
+Route::get('player/{steamID}', 'PlayerController@showPlayerSummeries');
+Route::get('player/{steamID1}/vs/{steamID2}', 'PlayerController@showComparedStats');
+
+Route::post('load-player/{steamID}', 'PlayerController@loadPlayerSummeries');
 
 /**
  * MatchController
  */
 Route::get('match/{matchID}', 'MatchController@showMatchDetails');
-Route::get('match/{steamID1}/compare/{steamID2}', 'MatchController@showComparedMatches');

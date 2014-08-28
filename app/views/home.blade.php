@@ -14,9 +14,9 @@
 
 @section('content')
 
-	{{ Form::open(array('id' => 'steamIdForm')) }}
+	{{ Form::open(array('id' => 'steamIDForm')) }}
 
-	{{ Form::label('steamid', 'Steam ID') . Form::text('steamid') }}
+	{{ Form::label('steamID', 'Steam ID') . Form::text('steamID') }}
 	
 	{{ Form::submit('View') }}
 	

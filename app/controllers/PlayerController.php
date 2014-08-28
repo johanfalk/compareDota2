@@ -26,10 +26,10 @@ class PlayerController extends BaseController {
 	}
 
 	/**
-	 * Store matches related to steam id by ajax request.
+	 * Http Request from front-end.
 	 * 
 	 * @param  int $steamID 
-	 * @return boolean
+	 * @return json
 	 */
 	public function loadPlayerSummeries($steamID)
 	{
@@ -40,8 +40,12 @@ class PlayerController extends BaseController {
 		return Response::json('Failed');
 	}
 
-	public function isValidID($id)
+	public function showComparedStats($steamID1, $steamID2)
 	{
-		return true;
+		if($playerOne = $this->dotaService->getPlayerSummeries() && $playerTwo = $this->dotaService->getPlayerSummeries())
+		{
+
+		}
+		return View::make('player.compare');
 	}
 }
