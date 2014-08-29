@@ -4,7 +4,7 @@ use Session;
 use Cache;
 use Dota\Api\DotaApi;
 use Dota\Handlers\DotaMatchHandler;
-use Dota\SteamIDConverter;
+use Dota\Handlers\DotaIDHandler;
 use Dota\Player;
 
 /**
@@ -16,11 +16,15 @@ class DotaService
 
 	private $dotaMatchHandler;
 
-	function __construct(DotaApi $dotaApi, DotaMatchHandler $dotaMatchHandler)
+	public $dotaIDHandler;
+
+	function __construct(DotaApi $dotaApi, DotaMatchHandler $dotaMatchHandler, DotaIDHandler $dotaIDHandler)
 	{
 		$this->dotaApi = $dotaApi;
 	
 		$this->dotaMatchHandler = $dotaMatchHandler;
+
+		$this->dotaIDHandler = $dotaIDHandler;
 	}
 
 	/**
@@ -29,17 +33,17 @@ class DotaService
 	 * @param  int $steamID
 	 * @return boolean
 	 */
-	public function getPlayerMatches($steamID)
+	public function getPlayerMatches($steamIDs)
 	{
-		$matchIDs = $this->dotaApi->getMatchIDs($steamID);
+		$matchIDs = $this->dotaApi->getMatchIDs($steamIDs->steam64ID);
 
 		$matchesToCallApi = $this->dotaMatchHandler->getMatchesToCallApi($matchIDs);
-
+		
 		$matchesFromApi = $this->dotaApi->getMatchesFromApi($matchesToCallApi);
-
+		
 		$this->dotaMatchHandler->storeMatchesInDatabase($matchesFromApi);
 
-		return $this->dotaMatchHandler->getMatchesFromDatabase($matchIDs);
+		return $this->dotaMatchHandler->getMatchesFromDatabase($steamIDs);
 	}
 
 	/**
@@ -50,7 +54,7 @@ class DotaService
 	 */
 	public function getSteamProfile($steamID)
 	{
-		if($steamIDs = $this->getSteamIDs($steamID))
+		if($steamIDs = $this->dotaIDHandler->getPlayerIDs($steamID))
 		{
 			if(Session::has($steamIDs->profileID))
 			{
@@ -68,25 +72,6 @@ class DotaService
 	}
 
 	/**
-	 * Convert one ID to different kinds of ID.
-	 * 
-	 * @param  int $steamID
-	 * @return T				false / object 
-	 */
-	public function getSteamIDs($steamID)
-	{
-		if(isset($steamID))
-		{
-			$steamIDs = new SteamIDConverter($steamID);
-
-			if($steamIDs->isValid)
-				return $steamIDs;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Get player summeries and store it within a new ojbect.
 	 * 
 	 * @param  int $steamID
@@ -94,7 +79,7 @@ class DotaService
 	 */
 	public function getPlayerSummeries($steamID)
 	{
-		if($steamIDs = $this->getSteamIDs($steamID))
+		if($steamIDs = $this->dotaIDHandler->getPlayerIDs($steamID))
 		{
 			if(Cache::has($steamIDs->steam64ID))
 			{
@@ -102,16 +87,21 @@ class DotaService
 			}
 			else if($profile = $this->getSteamProfile($steamIDs->steam64ID)) 
 			{
-				$matches = $this->getPlayerMatches($steamIDs->steam64ID);
+				$matches = $this->getPlayerMatches($steamIDs);
 
-				$player = new PLayer($steamIDs, $profile, $matches);
-			
-				Cache::put($steamIDs->$steam64ID, $player, 20);
+				$player = new Player($steamIDs, $profile, $matches);
+
+				Cache::put($steamIDs->steam64ID, $player, 20);
 
 				return $player; 
-			}			
+			}
 		}
 	
 		return false;
+	}
+
+	public function getMultiplePlayerProfiles($steamIDs)
+	{
+		# code...
 	}
 }

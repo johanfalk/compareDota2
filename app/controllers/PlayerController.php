@@ -20,7 +20,7 @@ class PlayerController extends BaseController {
 	{
 		if($playerSummeries = $this->dotaService->getPlayerSummeries($steamID))
 		{
-			return View::make('match.all', array('playerSummeries', $playerSummeries));
+			return View::make('player.summeries')->with('player', $playerSummeries);
 		}
 		return Redirect::to('/')->with('message', 'Invalid Steam ID');
 	}
@@ -31,8 +31,10 @@ class PlayerController extends BaseController {
 	 * @param  int $steamID 
 	 * @return json
 	 */
-	public function loadPlayerSummeries($steamID)
+	public function loadPlayerSummeriesByAjax()
 	{
+		$steamID = Input::get('steamID');
+
 	 	if($playerSummeries = $this->dotaService->getPlayerSummeries($steamID))
 		{
 			return Response::json('Success');
@@ -40,12 +42,11 @@ class PlayerController extends BaseController {
 		return Response::json('Failed');
 	}
 
-	public function showComparedStats($steamID1, $steamID2)
+/*	public function showComparedStats($steamID1, $steamID2)
 	{
-		if($playerOne = $this->dotaService->getPlayerSummeries() && $playerTwo = $this->dotaService->getPlayerSummeries())
+		if($profiles = $dotaService->getMultiplePlayerProfiles())
 		{
-
+			$playerOne = $this->dotaService->getPlayerMatches($steamID));
 		}
-		return View::make('player.compare');
-	}
+	}*/
 }

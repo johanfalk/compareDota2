@@ -27,7 +27,7 @@ class DotaApi
 	 */
 	public function getMatchIDs($steamid)
 	{
-		$url = 'https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/?key=' . $this->apiKey . '&matches_requested=5&account_id=' . $steamid;
+		$url = 'https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/?key=' . $this->apiKey . '&matches_requested=100&account_id=' . $steamid;
 
 		$data = $this->makeCall($url);
 
@@ -67,6 +67,8 @@ class DotaApi
 	 */
 	public function getMatchesFromApi($matchIDs)
 	{
+		$matches = array();
+		
 		foreach($matchIDs as $matchID)
 		{
 			$matches[] = $this->getMatchDetails($matchID);

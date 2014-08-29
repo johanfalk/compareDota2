@@ -1,25 +1,28 @@
 $(document).ready(function() {
-    $("#steamIDForm").on('submit', function(event) {
-		event.preventDefault();
+	$("#steamIDForm").on('submit', function(event)
+	{
+	   	event.preventDefault(); //STOP default action
 
 		var steamID = $('#steamID').val();
+	    var postData = $(this).serializeArray();
+	    var formURL = $(this).attr("action");
 
-    	if(steamID) {
+	 	$('#loading-gif').show();
 
-    		$('#loading-gif').css('display', 'block');
+	    $.ajax(
+	    {
+	        url : '/compareDota2/public/load-player',
+	        type: 'POST',
+	        data : postData,
+	        success:function(data, textStatus, jqXHR) 
+	        {
+	    		$('#loading-gif').hide();
 
-			$.ajax({
-			   	url: "/compareDota2/public/load-player/" + steamID,
-			    type: "post",
-			    data: steamID
-			}).done(function(data) {
-				$('#loading-gif').css('display', 'none');
-
-				if(data === 'Success') {
-					var path = 'http://localhost/compareDota2/public/player/' + steamID;
-	  				window.location = path;
-				}
-			});
-    	}
+	        	if(data === 'Success')
+	        	{
+	        		window.location = '/compareDota2/public/player/' + steamID;
+	        	}
+	        }
+	    });
 	});
 });

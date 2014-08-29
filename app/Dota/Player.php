@@ -1,7 +1,5 @@
 <?php namespace Dota;
 
-use stdClass;
-
 /**
 * Store the summeries for one player.
 */
@@ -35,10 +33,10 @@ class Player
 
 	private function calculateAverageStats($matches)
 	{
-		$matchCount = count($matches);
+/*		$matchCount = count($matches);
 
 		$stats = new stdClass();
 
-		return $stats;
+		return $stats;*/
 	}
 }
