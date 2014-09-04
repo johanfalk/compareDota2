@@ -1,4 +1,4 @@
-<?php namespace Dota;
+<?php namespace Dota\Tools;
 
 class SteamIDConverter
 {

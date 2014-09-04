@@ -1,8 +1,8 @@
 <?php namespace Dota\Handlers;
 
-use Dota\SteamIDConverter;
+use Dota\Tools\SteamIDConverter;
 
-class DotaIDHandler
+class IDHandler
 {
 	/**
 	 * Convert one ID to different kinds of steam IDs.
@@ -64,5 +64,15 @@ class DotaIDHandler
 		}
 
 		return $playerIDs;
+	}
+
+	public function mergeProfileWithIDs($IDs, $profile)
+	{
+		foreach($IDs as $key => $value)
+		{
+			$profile->$key = $value;
+		}
+
+		return $profile;
 	}
 }

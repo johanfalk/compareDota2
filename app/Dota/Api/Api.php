@@ -2,7 +2,7 @@
 
 use Dota\Match;
 
-class DotaApi
+class Api
 {
 	protected $apiKey = '74A251B8EE2BED515308DCA521E4B6B9';
 
@@ -25,10 +25,10 @@ class DotaApi
 	 * @param  int $steamid
 	 * @return array
 	 */
-	public function getMatchIDs($steamid)
+	public function getMatchIDs($steamid, $numberOfMatches = 5)
 	{
-		$url = 'https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/?key=' . $this->apiKey . '&matches_requested=100&account_id=' . $steamid;
-
+		$url = 'https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/?key=' . $this->apiKey . '&matches_requested=' . $numberOfMatches . '&account_id=' . $steamid;
+		
 		$data = $this->makeCall($url);
 
 		return $this->getMatchIDsFromArray($data->result->matches);

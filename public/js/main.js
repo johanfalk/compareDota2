@@ -11,7 +11,7 @@ $(document).ready(function() {
 
 	    $.ajax(
 	    {
-	        url : '/compareDota2/public/load-player',
+	        url : '/compareDota2/public/player/' + steamID + '/load',
 	        type: 'POST',
 	        data : postData,
 	        success:function(data, textStatus, jqXHR) 

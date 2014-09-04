@@ -1,28 +1,42 @@
 <?php
 
-use Dota\Services\DotaService;
+use Dota\Services\PlayerService;
+use Dota\Repositories\PlayerDetailRepository;
 
 class PlayerController extends BaseController {
 
-	private $dotaService;
+	private $playerService;
 
-	function __construct(DotaService $dotaService)
+	private $playerDetailRepository;
+
+	function __construct(PlayerService $playerService, PlayerDetailRepository $playerDetailRepository)
 	{
-		$this->dotaService = $dotaService;
+		$this->playerService = $playerService;
+
+		$this->playerDetailRepository = $playerDetailRepository;
 	}
 
 	/**
-	 * Show player matches and is profile.
+	 * Show player matches, profile and stats.
 	 * 
 	 * @param  int $steamID 
 	 */
 	public function showPlayerSummeries($steamID)
 	{
-		if($playerSummeries = $this->dotaService->getPlayerSummeries($steamID))
+		$player = $this->playerService->getPlayer($steamID);
+
+		if(!isset($player))
 		{
-			return View::make('player.summeries')->with('player', $playerSummeries);
+			return Redirect::to('/')->with('message', 'Invalid Steam ID');
 		}
-		return Redirect::to('/')->with('message', 'Invalid Steam ID');
+
+		$this->playerService->loadPlayerMatches($player->profile->steam64ID);
+
+		$matchDetails = $this->playerDetailRepository->getPaginatorWithMatchDetail($player->profile->steam32ID);
+
+		return View::make('player.summeries')
+	 	    ->with('player', $player)
+	 	    ->with('matchDetails', $matchDetails);
 	}
 
 	/**
@@ -35,18 +49,10 @@ class PlayerController extends BaseController {
 	{
 		$steamID = Input::get('steamID');
 
-	 	if($playerSummeries = $this->dotaService->getPlayerSummeries($steamID))
+	 	if($this->playerService->loadPlayer($steamID))
 		{
 			return Response::json('Success');
 		}
 		return Response::json('Failed');
 	}
-
-/*	public function showComparedStats($steamID1, $steamID2)
-	{
-		if($profiles = $dotaService->getMultiplePlayerProfiles())
-		{
-			$playerOne = $this->dotaService->getPlayerMatches($steamID));
-		}
-	}*/
 }
