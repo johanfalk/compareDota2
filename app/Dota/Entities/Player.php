@@ -11,10 +11,10 @@ class Player
 
 	public $stats;
 
-	function __construct($profile)
+	function __construct($profile, $stats)
 	{
 		$this->profile = $profile;
 
-		$this->stats = new StatsHandler(); 
+		$this->stats = $stats;
 	}
 }

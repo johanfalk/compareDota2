@@ -1,6 +1,5 @@
 <?php namespace Dota\Handlers;
 
-use DB;
 use Dota\Repositories\MatchDetailRepository;
 use Dota\Repositories\PlayerDetailRepository;
 
@@ -24,7 +23,7 @@ class MatchHandler
 	public function getMatchesToCallApi($matchIDs)
 	{
 		$matchesNotToCallApi = $this->matchDetailRepository->getStoredMatchIDs($matchIDs);
-
+		
 		return $this->sortOutMatchIDsToCall($matchesNotToCallApi, $matchIDs);
 	}
 
@@ -43,7 +42,7 @@ class MatchHandler
 		{
 			if(!in_array($value, $matchesNotToCallApi))
 			{
-				$matchesIDsToCallApi[] = $value;
+				$matchIDsToCallApi[] = $value;
 			}
 		}
 		

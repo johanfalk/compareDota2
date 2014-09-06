@@ -19,7 +19,7 @@ class MatchDetailRepository
 	 */
 	public function getStoredMatchIDs($matchIDs)
 	{
-		return $this->matchDetail->select('id')->whereIn('id', $matchIDs)->get()->toArray();
+		return $this->matchDetail->whereIn('id', $matchIDs)->lists('id');
 	}
 
 

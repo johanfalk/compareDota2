@@ -26,15 +26,16 @@
 		</tr>
 
 	@endif
-
+	
 	@foreach($matchDetails as $match)
 	
+	{{ dd($match) }}
 	<tr>	
-
+	
 		<td>{{ $match->hero_id }}</td>
 		<td>{{ $match->kills }}</td>
 		<td>{{ $match->deaths }}</td>
-		<td>{{ $match->assits }}</td>
+		<td>{{ $match->assists }}</td>
 		<td>{{ $match->gold_per_min }}</td>
 		<td>{{ $match->xp_per_min }}</td>
 

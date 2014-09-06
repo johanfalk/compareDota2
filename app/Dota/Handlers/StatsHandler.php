@@ -2,25 +2,8 @@
 
 class StatsHandler
 {
-
-	public $average;
-
-	public $total;
-
-	function __construct()
+	public function getPlayerStats($profile)
 	{
-		$this->setAverage();
-
-		$this->setTotal();
-	}
-
-	private function setAverage()
-	{
-		# code...
-	}
-
-	private function setTotal()
-	{
-		# code...
+		
 	}
 }

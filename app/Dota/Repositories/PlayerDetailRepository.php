@@ -11,7 +11,7 @@ class PlayerDetailRepository
 		$this->playerDetail = $playerDetail;
 	}
 
-	public function getPaginatorWithMatchDetail($id)
+	public function getPaginatorWithMatchDetails($id)
 	{
 		return $this->playerDetail->with('matchDetail')->where('id', '=', $id)->paginate(20);
 	}

@@ -12,16 +12,14 @@ class Hero
 
 	public $abilities;
 
-	private $heroRepository;	
+	private $heroRepository;
 
-	function __construct(HeroRepository $heroRepository)
+	function __construct($attributes)
 	{
-		$this->heroRepository = $heroRepository;
-
-		$this->getInfo();
+		$this->setAttributes($attributes);
 	}
 
-	private function getInfo($value='')
+	private function setAttributes($attributes)
 	{
 		# code...
 	}

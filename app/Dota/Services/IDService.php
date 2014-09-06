@@ -1,8 +1,8 @@
-<?php namespace Dota\Handlers;
+<?php namespace Dota\Services;
 
 use Dota\Tools\SteamIDConverter;
 
-class IDHandler
+class IDService
 {
 	/**
 	 * Convert one ID to different kinds of steam IDs.

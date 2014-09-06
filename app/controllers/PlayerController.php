@@ -9,11 +9,9 @@ class PlayerController extends BaseController {
 
 	private $playerDetailRepository;
 
-	function __construct(PlayerService $playerService, PlayerDetailRepository $playerDetailRepository)
+	function __construct(PlayerService $playerService)
 	{
 		$this->playerService = $playerService;
-
-		$this->playerDetailRepository = $playerDetailRepository;
 	}
 
 	/**
@@ -30,9 +28,9 @@ class PlayerController extends BaseController {
 			return Redirect::to('/')->with('message', 'Invalid Steam ID');
 		}
 
-		$this->playerService->loadPlayerMatches($player->profile->steam64ID);
+		$this->playerService->loadMatches($player->profile->steam64ID);
 
-		$matchDetails = $this->playerDetailRepository->getPaginatorWithMatchDetail($player->profile->steam32ID);
+		$matchDetails = $this->playerService->getPaginator($player->profile->steam32ID);
 
 		return View::make('player.summeries')
 	 	    ->with('player', $player)

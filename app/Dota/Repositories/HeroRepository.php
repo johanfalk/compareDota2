@@ -9,7 +9,7 @@ class HeroRepository
 		$this->hero = $hero;
 	}
 
-	public function getHeros()
+	public function getHeroes()
 	{
 		return Cache::remember('heroes', 20 function() 
 		{
@@ -17,8 +17,8 @@ class HeroRepository
 		});
 	}
 
-	public function getHeroInfoByID($id)
+	public function getHero($id)
 	{
-		return $thid->hero->find($id);
+		return $this->hero->hasMany('attributes')->find($id);
 	}
 }
