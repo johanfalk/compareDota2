@@ -1,5 +1,6 @@
 <?php namespace Dota\Handlers;
 
+use Session;
 use Dota\Repositories\MatchDetailRepository;
 use Dota\Repositories\PlayerDetailRepository;
 
@@ -58,6 +59,32 @@ class MatchHandler
 		{
 			$this->matchDetailRepository->putMatchDetails($match->result);
 			$this->playerDetailRepository->putPlayersDetails($match->result->players, $match->result->match_id);
+		}
+	}
+
+	/**
+	 * Check if matches for a player is already loaded.
+	 * 
+	 * @return boolean
+	 */
+	public function matchesAreLoaded($ID)
+	{
+		if(Session::has($ID))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Set session wtih player ID to know if matches were loaded
+	 */
+	public function setSession($ID)
+	{
+		if(isset($ID))
+		{
+			Session::put('test', 'Matches are loaded!');
 		}
 	}
 }

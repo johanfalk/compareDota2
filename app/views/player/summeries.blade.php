@@ -4,10 +4,12 @@
 
 	<h1> {{ $player->profile->personaname }} </h1>
 
-	<img src="{{ $player->profile->avatarmedium }}"/>
-	
-	<p>Link to <a href="{{ $player->profile->profileurl }}">profile!</a></p>
+	<a href="{{ $player->profile->profileurl }}">
 
+		<img src="{{ $player->profile->avatarmedium }}"/>
+
+	</a>
+	
 @stop
 
 @section('content')
@@ -29,7 +31,6 @@
 	
 	@foreach($matchDetails as $match)
 	
-	{{ dd($match) }}
 	<tr>	
 	
 		<td>{{ $match->hero_id }}</td>

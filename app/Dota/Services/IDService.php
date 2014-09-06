@@ -1,5 +1,6 @@
 <?php namespace Dota\Services;
 
+use Session;
 use Dota\Tools\SteamIDConverter;
 
 class IDService
@@ -7,17 +8,17 @@ class IDService
 	/**
 	 * Convert one ID to different kinds of steam IDs.
 	 * 
-	 * @param  int $steamID
+	 * @param  int $IDs
 	 * @return T				false / object 
 	 */
-	public function getPlayerIDs($steamID)
+	private function convertID($IDs)
 	{
-		if(isset($steamID))
+		if(isset($IDs))
 		{
-			$steamIDs = new SteamIDConverter($steamID);
+			$IDs = new SteamIDConverter($IDs);
 
-			if($steamIDs->isValid)
-				return $steamIDs;
+			if($IDs->isValid)
+				return $IDs;
 		}
 
 		return false;
@@ -26,12 +27,12 @@ class IDService
 	/**
 	 * Validate an array of IDs
 	 * 
-	 * @param  array $steamIDs
+	 * @param  array $IDs
 	 * @return boolean     
 	 */
-	public function validateIDs($steamIDs)
+	public function validateIDs($IDs)
 	{
-		foreach($steamIDs as $ID)
+		foreach($IDs as $ID)
 		{
 			if(!$this->getPlayerIDs($ID))
 			{
@@ -45,16 +46,16 @@ class IDService
 	/**
 	 * Returns all IDs that was valid throught getPlayerIDs()
 	 * 
-	 * @param  array $steamIDs
+	 * @param  array $IDs
 	 * @return array     		Containing SteamIDConverter objects
 	 */
-	public function getMultiplePlayerIDs($steamIDs)
+	public function getMultiplePlayerIDs($IDs)
 	{
 		$playerIDs = array();
 
-		foreach($steamIDs as $ID)
+		foreach($IDs as $ID)
 		{
-			if($ID = $this->getPlayerIDs($ID))
+			if($ID = $this->convertID($ID))
 			{
 				if(!in_array($ID, $playerIDs))
 				{
@@ -66,13 +67,57 @@ class IDService
 		return $playerIDs;
 	}
 
-	public function mergeProfileWithIDs($IDs, $profile)
+	public function mergeIDsWithProfile($IDs, $profile)
 	{
-		foreach($IDs as $key => $value)
+		if($this->hasIDs())
 		{
-			$profile->$key = $value;
+			foreach($IDs as $key => $value)
+			{
+				$profile->$key = $value;
+			}			
 		}
 
 		return $profile;
+	}
+
+	public function save($ID)
+	{
+		if($IDs = $this->convertID($ID))
+		{
+			$this->setSession($IDs);
+
+			return true;
+		}
+		return false;
+	}
+
+	private function setSession($IDs)
+	{
+		Session::put('SteamIDs', $IDs);
+	}
+
+	public function get($ID = 'steam64ID')
+	{
+		if($IDs = $this->getAll())
+		{
+			return $IDs->$ID;
+		}
+
+		return false;
+	}
+
+	public function hasIDs()
+	{
+		return Session::has('SteamIDs');
+	}
+
+	public function getAll()
+	{
+		if($this->hasIDs())
+		{
+			return Session::get('SteamIDs');
+		}
+
+		return $this->getPlayerIDs();
 	}
 }

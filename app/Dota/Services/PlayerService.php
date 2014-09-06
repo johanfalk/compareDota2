@@ -18,7 +18,11 @@ class PlayerService
 
 	private $matchHandler;
 
-	public $IDService;
+	private $IDService;
+
+	private $statsHandler;
+
+	private $playerDetailRepository;
 
 	function __construct(Api $api, MatchHandler $matchHandler, StatsHandler $statsHandler, IDService $IDService, PlayerDetailRepository $playerDetailRepository)
 	{
@@ -35,39 +39,44 @@ class PlayerService
 
 	/**
 	 * This function always expect a steam 64 bit ID.
-	 * 
-	 * @param  int $steam64ID
 	 */
-	public function loadMatches($steamID)
+	public function loadMatches()
 	{
-		$matchIDs = $this->api->getMatchIDs($steamID);
+		$ID = $this->IDService->getAll();
 
-		$matchesToCallApi = $this->matchHandler->getMatchesToCallApi($matchIDs);
+		if(!$this->matchHandler->matchesAreLoaded($ID->matchID))
+		{
+			var_dump($this->matchHandler->matchesAreLoaded($ID->steam64ID));
+			$matchIDs = $this->api->getMatchIDs($ID->steam64ID);
 
-		$matchesFromApi = $this->api->getMatchesFromApi($matchesToCallApi);
+			$matchesToCallApi = $this->matchHandler->getMatchesToCallApi($matchIDs);
 
-		$this->matchHandler->storeMatchesInDatabase($matchesFromApi);
+			$matchesFromApi = $this->api->getMatchesFromApi($matchesToCallApi);
+
+			$this->matchHandler->storeMatchesInDatabase($matchesFromApi);
+
+			$this->matchHandler->setSession($ID->matchID);
+		}
 	}
 
 	/**
 	 * Get a steam profile from the dotaApi.
 	 * 
-	 * @param  int $steamID Steam ID
 	 * @return void 
 	 */
-	public function getSteamProfile($steamID)
+	public function getSteamProfile()
 	{
-		if($steamIDs = $this->IDService->getPlayerIDs($steamID))
+		if($IDs = $this->IDService->getAll())
 		{
-			if(Session::has($steamIDs->profileID))
+			if(Session::has($IDs->profileID))
 			{
-				return Session::get($steamIDs->profileID);
+				return Session::get($IDs->profileID);
 			}
-			if($profile = $this->api->oneProfile($steamIDs->steam64ID))
+			if($profile = $this->api->oneProfile($IDs->steam64ID))
 			{
-				$profile = $this->IDService->mergeProfileWithIDs($steamIDs, $profile);
+				$profile = $this->IDService->mergeIDsWithProfile($IDs, $profile);
 
-				Session::put($steamIDs->profileID, $profile);
+				Session::put($IDs->profileID, $profile);
 
 				return $profile;
 			}
@@ -79,12 +88,11 @@ class PlayerService
 	/**
 	 * Get player summeries and store it within a new ojbect.
 	 * 
-	 * @param  int $steamID
 	 * @return T          		false / object
 	 */
-	public function getPlayer($steamID)
+	public function getPlayer()
 	{
-		if($profile = $this->getSteamProfile($steamID))
+		if($profile = $this->getSteamProfile())
 		{
 			return Cache::remember($profile->steam64ID, 20, function() use ($profile)
 			{
@@ -105,13 +113,13 @@ class PlayerService
 	 * @param  int $steamID
 	 * @return boolean
 	 */
-	public function loadPlayer($steamID)
+	public function loadPlayer()
 	{
-		$player = $this->getPlayer($steamID); 
+		$player = $this->getPlayer(); 
 		
 		if(isset($player))
 		{
-			$this->loadMatches($player->profile->steam64ID);
+			$this->loadMatches();
 			
 			return true;
 		}
@@ -119,8 +127,15 @@ class PlayerService
 		return false;
 	}
 
-	public function getPaginator($id)
+	public function getPaginator()
 	{
-		return $this->playerDetailRepository->getPaginatorWithMatchDetails($id);
+		$ID = $this->IDService->get('steam32ID');
+
+		return $this->playerDetailRepository->getPaginatorWithMatchDetails($ID);
+	}
+
+	public function saveID($steamID)
+	{
+		return $this->IDService->save($steamID);
 	}
 }

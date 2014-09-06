@@ -1,13 +1,10 @@
 <?php
 
 use Dota\Services\PlayerService;
-use Dota\Repositories\PlayerDetailRepository;
 
 class PlayerController extends BaseController {
 
 	private $playerService;
-
-	private $playerDetailRepository;
 
 	function __construct(PlayerService $playerService)
 	{
@@ -21,16 +18,16 @@ class PlayerController extends BaseController {
 	 */
 	public function showPlayerSummeries($steamID)
 	{
-		$player = $this->playerService->getPlayer($steamID);
+		$this->playerService->saveID($steamID);
 
-		if(!isset($player))
+		if(!$player = $this->playerService->getPlayer())
 		{
 			return Redirect::to('/')->with('message', 'Invalid Steam ID');
 		}
 
-		$this->playerService->loadMatches($player->profile->steam64ID);
+		$this->playerService->loadMatches();
 
-		$matchDetails = $this->playerService->getPaginator($player->profile->steam32ID);
+		$matchDetails = $this->playerService->getPaginator();
 
 		return View::make('player.summeries')
 	 	    ->with('player', $player)
@@ -45,9 +42,9 @@ class PlayerController extends BaseController {
 	 */
 	public function loadPlayerSummeriesByAjax()
 	{
-		$steamID = Input::get('steamID');
+		$this->playerService->saveID(Input::get('steamID'));
 
-	 	if($this->playerService->loadPlayer($steamID))
+	 	if($this->playerService->loadPlayer())
 		{
 			return Response::json('Success');
 		}
