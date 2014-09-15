@@ -1,14 +1,14 @@
 <?php
 
-use Dota\Services\PlayerService;
+use Dota\Dota;
 
 class MatchController extends BaseController {
 
-	private $playerService;
+	private $dota;
 
-	function __construct(PlayerService $playerService)
+	function __construct(DotaService $dota)
 	{
-		$this->playerService = $playerService;
+		$this->dota = $dota;
 	}
 
 	/**
@@ -18,7 +18,7 @@ class MatchController extends BaseController {
 	 */
 	public function showMatchDetails($matchID)
 	{
-		if($match = $this->playerService->getMatchDetails($matchID))
+		if($match = $this->dota->getMatch($matchID))
 		{
 			return View::make('match.detail')->with('match', $match);
 		}

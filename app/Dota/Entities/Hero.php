@@ -1,26 +1,25 @@
 <?php namespace Dota\Entities;
 
-use Dota\Repositories\HeroRepository;
-
 class Hero
 {
+	public $id;
+
 	public $name;
 
-	public $iconPath;
+	public $imagePath;
 
 	public $type;
 
-	public $abilities;
+	public $role;
 
-	private $heroRepository;
+	public $team;
+
+	public $heroGlowColor;
+
+	public $abilities;
 
 	function __construct($attributes)
 	{
-		$this->setAttributes($attributes);
-	}
-
-	private function setAttributes($attributes)
-	{
-		# code...
+		// Set attributes.
 	}
 }

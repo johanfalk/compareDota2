@@ -10,10 +10,10 @@
 
 </head>
 <body>
-
-	<h4>76561198011435969</h4>
-
+	
+	@yield('mainMenu')
 	@yield('header')
 	@yield('content')
+
 </body>
 </html>

@@ -1,14 +1,14 @@
 <?php
 
-use Dota\Services\PlayerService;
+use Dota\Dota;
 
 class PlayerController extends BaseController {
 
-	private $playerService;
+	private $dota;
 
-	function __construct(PlayerService $playerService)
+	function __construct(Dota $dota)
 	{
-		$this->playerService = $playerService;
+		$this->dota = $dota;
 	}
 
 	/**
@@ -18,20 +18,20 @@ class PlayerController extends BaseController {
 	 */
 	public function showPlayerSummeries($steamID)
 	{
-		$this->playerService->saveID($steamID);
+		$this->dota->saveID($steamID);
 
-		if(!$player = $this->playerService->getPlayer())
+		if($this->dota->loadPlayer())
 		{
-			return Redirect::to('/')->with('message', 'Invalid Steam ID');
+			$player = $this->dota->getPlayerSummeries();
+
+			$matches = $this->dota->getPaginatorForPlayer();
+
+			return View::make('player.summeries')
+		 	    ->with('player', $player)
+		 	    ->with('matches', $matches);
 		}
 
-		$this->playerService->loadMatches();
-
-		$matchDetails = $this->playerService->getPaginator();
-
-		return View::make('player.summeries')
-	 	    ->with('player', $player)
-	 	    ->with('matchDetails', $matchDetails);
+		return Redirect::to('/')->with('message', 'Invalid Steam ID');
 	}
 
 	/**
@@ -42,9 +42,9 @@ class PlayerController extends BaseController {
 	 */
 	public function loadPlayerSummeriesByAjax()
 	{
-		$this->playerService->saveID(Input::get('steamID'));
+		$this->dota->saveID(Input::get('steamID'));
 
-	 	if($this->playerService->loadPlayer())
+	 	if($this->dota->loadPlayer())
 		{
 			return Response::json('Success');
 		}

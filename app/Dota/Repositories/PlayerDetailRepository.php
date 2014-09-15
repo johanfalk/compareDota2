@@ -1,6 +1,8 @@
 <?php namespace Dota\Repositories;
 
+use DB;
 use PlayerDetail;
+use Dota\Entities\Stats;
 
 class PlayerDetailRepository
 {
@@ -11,12 +13,19 @@ class PlayerDetailRepository
 		$this->playerDetail = $playerDetail;
 	}
 
-	public function getPaginatorWithMatchDetails($ID)
+	/**
+	 * Get paginator for player recent matches
+	 * 
+	 * @param  int  Steam 32 bit ID
+	 * @return object
+	 */
+	public function getPaginator($ID)
 	{
 		return $this->playerDetail
-			->with('matchDetail')
-			->where('id', '=', $ID)
-			->paginate(20);
+		    ->with('matchDetail')
+		    ->with('hero')
+		    ->where('id', '=', $ID)
+		    ->paginate(10);
 	}
 
 	/**
@@ -55,5 +64,32 @@ class PlayerDetailRepository
 
 			$match->save();
 		}
+	}
+
+	public function getStats($ID)
+	{
+		return new Stats($this->getStatsFromDatabase($ID));
+	}
+
+	public function getStatsFromDatabase($ID)
+	{
+		$stats = DB::table('player_detail')
+			->join('match_detail', 'player_detail.match_detail_id', '=', 'match_detail.id')
+		    ->select(DB::raw(
+		    	'avg(player_detail.gold_per_min) as gpm, 
+		    	avg(player_detail.xp_per_min) as xpm,
+		    	avg(player_detail.kills) as kills,
+		    	avg(player_detail.deaths) as deaths,
+		    	avg(player_detail.assists) as assists,
+		    	avg(player_detail.tower_damage) as towerDmg,
+		    	avg(player_detail.hero_damage) as heroDmg,
+		    	avg(player_detail.hero_healing) as heroHealing,
+		    	count(match_detail.duration) as totalMatches,
+		    	(max(match_detail.duration) * count(match_detail.duration)) as totalGameTime'
+		    ))
+		    ->where('player_detail.id', '=', $ID)
+		    ->get();
+
+		return $stats[0];
 	}
 }

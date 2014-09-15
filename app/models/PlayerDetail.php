@@ -1,7 +1,7 @@
 <?php
 
-class PlayerDetail extends Eloquent {
-
+class PlayerDetail extends Eloquent 
+{
 	public $timestamps = false;	
 
 	public $increments = false;
@@ -11,5 +11,10 @@ class PlayerDetail extends Eloquent {
 	public function matchDetail()
 	{
 		return $this->belongsTo('MatchDetail');
+	}
+
+	public function hero()
+	{
+		return $this->belongsTo('Hero');
 	}
 }

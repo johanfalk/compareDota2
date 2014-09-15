@@ -12,31 +12,82 @@
 */
 
 /**
- * HomeController
+ * Home page
  */
 Route::get('/', 'HomeController@showHomePage');
 
 /**
- * PlayerController
+ * Show player summeries.
  */
-Route::get('player/{steamID}', 'PlayerController@showPlayerSummeries');
-Route::get('player/{steamID1}/vs/{steamID2}', 'PlayerController@showComparedStats');
-Route::post('player/{steamID}/load', 'PlayerController@loadPlayerSummeriesByAjax');
+Route::get(
+
+	'player/{steamID}', 
+
+	'PlayerController@showPlayerSummeries'
+
+);
 
 /**
- * MatchController
+ * Show stats compared between players.
  */
-Route::get('match/{matchID}', 'MatchController@showMatchDetails');
+Route::get(
+
+	'player/{steamID1}/vs/{steamID2}', 
+
+	'PlayerController@showComparedStats'
+
+);
 
 /**
- * Tests
+ * Load the player with an ajax request.
  */
+Route::post(
 
+	'player/{steamID}/load', 
+
+	'PlayerController@loadPlayerSummeriesByAjax'
+
+);
+
+/**
+ * Show details for one match.
+ */
+Route::get(
+
+	'match/{matchID}', 
+
+	'MatchController@showMatchDetails'
+
+);
+
+/**
+ * Use this to test stuff like queries.
+ */
 Route::get('test', function() 
 {
+	$stats = DB::table('player_detail')
+		->join('match_detail', 'player_detail.match_detail_id', '=', 'match_detail.id')
+	    ->select(DB::raw(
+	    	'avg(player_detail.gold_per_min) as gpm, 
+	    	avg(player_detail.xp_per_min) as xpm,
+	    	avg(player_detail.kills) as kills,
+	    	avg(player_detail.deaths) as deaths,
+	    	avg(player_detail.assists) as assists,
+	    	avg(player_detail.tower_damage) as towerDmg,
+	    	avg(player_detail.hero_damage) as heroDmg,
+	    	avg(player_detail.hero_healing) as heroHealing,
+	    	count(match_detail.duration) as totalMatches,
+	    	(max(match_detail.duration) * count(match_detail.duration)) as totalGameTime'
+	    ))
+	    ->where('player_detail.id', '=', 51170241)
+	    ->get();
 
+	    return Response::json(array_shift($stats));
 });
 
+/**
+ * Log queries done by Laravel.
+ */
 /*Event::listen('illuminate.query', function($sql, $bindings, $time){
     echo $sql;          // select * from my_table where id=? 
     print_r($bindings); // Array ( [0] => 4 )

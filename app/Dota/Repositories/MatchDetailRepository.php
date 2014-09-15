@@ -43,4 +43,9 @@ class MatchDetailRepository
 
 		$match->save();
 	}
+
+	public function getMatch($ID)
+	{
+		return $this->matchDetail->with('playerDetails');
+	}
 }

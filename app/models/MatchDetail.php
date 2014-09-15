@@ -1,13 +1,13 @@
 <?php
 
-class MatchDetail extends Eloquent {
-
+class MatchDetail extends Eloquent 
+{
 	public $timestamps = false;	
 
 	protected $table = 'match_detail';
 
-	public function playerDetail()
+	public function playerDetails()
 	{
-		return $this->hasMany('PlayerDetail');
+		return $this->hasMany('PlayerDetail')->with('Hero');
 	}
 }

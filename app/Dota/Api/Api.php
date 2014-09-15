@@ -25,7 +25,7 @@ class Api
 	 * @param  int $steamid
 	 * @return array
 	 */
-	public function getMatchIDs($steamid, $numberOfMatches = 5)
+	public function getMatchIDs($steamid, $numberOfMatches = 100)
 	{
 		$url = 'https://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/V001/?key=' . $this->apiKey . '&matches_requested=' . $numberOfMatches . '&account_id=' . $steamid;
 		

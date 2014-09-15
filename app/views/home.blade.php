@@ -1,14 +1,20 @@
 @extends('default.layout')
 
-@section('header')
-
+@section('mainMenu')
+	
 	<h2>Compare Dota 2</h2>
 
-	<p>View and compare you statistics by entring a Steam ID!</p>
+	<ul>
+		<li><a href="#">Heroes</a></li>
+		<li><a href="#">Items</a></li>
+		<li><a href="#">News</a></li>
+	</ul>
+	
+@stop
 
-	@if (Session::has('message'))
-		{{ Session::get('message') }}
-	@endif
+@section('header')
+
+	<p>View and compare you statistics</p>
 
 @stop
 
@@ -24,4 +30,9 @@
 	
 	{{ HTML::image('images/loading.gif', 'Loading', array('id' => 'loading-gif')); }}
 
+	<!--<h4>76561198011435968</h4>
+		<h4>76561198040172380</h4>-->
+	@if (Session::has('message'))
+		{{ Session::get('message') }}
+	@endif
 @stop

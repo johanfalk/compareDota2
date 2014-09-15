@@ -1,10 +1,10 @@
-<?php namespace Dota\Handlers;
+<?php namespace Dota\Services;
 
-use Session;
+use Cache;
 use Dota\Repositories\MatchDetailRepository;
 use Dota\Repositories\PlayerDetailRepository;
 
-class MatchHandler
+class MatchService
 {
 	private $matchDetailRepository;
 
@@ -51,9 +51,11 @@ class MatchHandler
 	}
 
 	/**
-	 * @param  array $matches List of match ids
+	 * Put match details in database.
+	 * 
+	 * @param  array
 	 */
-	public function storeMatchesInDatabase($matches)
+	public function putMatchesInDatabase($matches)
 	{	
 		foreach($matches as $match)
 		{
@@ -69,22 +71,28 @@ class MatchHandler
 	 */
 	public function matchesAreLoaded($ID)
 	{
-		if(Session::has($ID))
+		if(Cache::has($ID))
 		{
 			return true;
 		}
-
 		return false;
 	}
 
 	/**
-	 * Set session wtih player ID to know if matches were loaded
+	 * Cache wtih player ID to know if matches were loaded
+	 *
+	 * @param int Match ID
 	 */
-	public function setSession($ID)
+	public function cacheLoadStatus($ID)
 	{
 		if(isset($ID))
 		{
-			Session::put('test', 'Matches are loaded!');
+			Cache::put($ID, 'Matches are loaded!', 20);
 		}
+	}
+
+	public function getMatch($ID)
+	{
+		return $this->matchDetailRepository->getMatch($ID);
 	}
 }

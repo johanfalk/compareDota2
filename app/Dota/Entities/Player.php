@@ -1,9 +1,7 @@
 <?php namespace Dota\Entities;
 
-use Dota\Handlers\StatsHandler;
-
 /**
-* Store the summeries for one player.
+* Store summeries for one player.
 */
 class Player
 {

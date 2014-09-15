@@ -11,11 +11,11 @@ class IDService
 	 * @param  int $IDs
 	 * @return T				false / object 
 	 */
-	private function convertID($IDs)
+	public function convertID($ID)
 	{
-		if(isset($IDs))
+		if(isset($ID))
 		{
-			$IDs = new SteamIDConverter($IDs);
+			$IDs = new SteamIDConverter($ID);
 
 			if($IDs->isValid)
 				return $IDs;
@@ -34,7 +34,7 @@ class IDService
 	{
 		foreach($IDs as $ID)
 		{
-			if(!$this->getPlayerIDs($ID))
+			if(!$this->convertID($ID))
 			{
 				return false;
 			}
@@ -44,42 +44,31 @@ class IDService
 	}
 
 	/**
-	 * Returns all IDs that was valid throught getPlayerIDs()
+	 * Merge all IDs inside an object.
 	 * 
-	 * @param  array $IDs
-	 * @return array     		Containing SteamIDConverter objects
+	 * @param  array/object $IDs
+	 * @param  object $object
+	 * @return object
 	 */
-	public function getMultiplePlayerIDs($IDs)
-	{
-		$playerIDs = array();
-
-		foreach($IDs as $ID)
-		{
-			if($ID = $this->convertID($ID))
-			{
-				if(!in_array($ID, $playerIDs))
-				{
-					$playerIDs[] = $ID;					
-				}
-			}
-		}
-
-		return $playerIDs;
-	}
-
-	public function mergeIDsWithProfile($IDs, $profile)
+	public function mergeIDsWithObject($IDs, $object)
 	{
 		if($this->hasIDs())
 		{
 			foreach($IDs as $key => $value)
 			{
-				$profile->$key = $value;
+				$object->$key = $value;
 			}			
 		}
 
-		return $profile;
+		return $object;
 	}
 
+	/**
+	 * Save current IDs in session.
+	 * 
+	 * @param  int $ID
+	 * @return Boolean
+	 */
 	public function save($ID)
 	{
 		if($IDs = $this->convertID($ID))
@@ -91,11 +80,22 @@ class IDService
 		return false;
 	}
 
+	/**
+	 * Set session for current ID in the application
+	 * 
+	 * @param object $IDs 
+	 */
 	private function setSession($IDs)
 	{
 		Session::put('SteamIDs', $IDs);
 	}
 
+	/**
+	 * Get one ID from the session.
+	 * 
+	 * @param  string $ID type of the ID
+	 * @return int
+	 */
 	public function get($ID = 'steam64ID')
 	{
 		if($IDs = $this->getAll())
@@ -106,11 +106,21 @@ class IDService
 		return false;
 	}
 
+	/**
+	 * Check if the application has IDs stored in session.
+	 * 
+	 * @return boolean
+	 */
 	public function hasIDs()
 	{
 		return Session::has('SteamIDs');
 	}
 
+	/**
+	 * return all IDs
+	 * 
+	 * @return object
+	 */
 	public function getAll()
 	{
 		if($this->hasIDs())
@@ -118,6 +128,6 @@ class IDService
 			return Session::get('SteamIDs');
 		}
 
-		return $this->getPlayerIDs();
+		return false;
 	}
 }
