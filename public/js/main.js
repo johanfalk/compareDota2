@@ -18,7 +18,9 @@ $(document).ready(function() {
 	        {
 	    		$('#loading-gif').hide();
 
-	        	if(data === 'Success')
+	    		console.log(steamID);
+
+	        	if(data['status'])
 	        	{
 	        		window.location = '/compareDota2/public/player/' + steamID;
 	        	}

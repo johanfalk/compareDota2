@@ -1,16 +1,23 @@
-Huvudidé:
-	- Jämföra statistik mellan användare inom olika spel som finns på steam(Första prio dota2).
-	
-Verktyg
-	- Använda valve api.
-	- Bygga på laravel MVC frame work(PHP).
-	- Javascript(jQuery) för eventuella ajax anrop.
-	- Sass till design(Finns det tid gör hemsidan responsive).
-	- Grunt(Javascript, Sass),
-	- Composer(PHP),
-	- https://moqups.com // En sida för mockups och wireframes.
+Global: 
+	- Main menu (Home, Summeries, Heroes)
 
-Hur går jag till väga?
-	1. Wireframe/mockup.
-	2. 
-	3.
+Home: 
+	- Login through steam? 
+	- Search on steam ID
+
+PlayerSummeries:
+	- Player Profile 
+	- Match paginator
+	- player statistics
+
+Match: 
+	- View match detail 
+	- "Like" function 
+
+Hero:
+	- Detail about hero
+	- List Matches Played with hero
+	- List Player Stats with hero
+
+Items:
+	- Load information when hover item 

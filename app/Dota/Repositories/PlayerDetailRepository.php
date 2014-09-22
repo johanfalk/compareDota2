@@ -25,6 +25,7 @@ class PlayerDetailRepository
 		    ->with('matchDetail')
 		    ->with('hero')
 		    ->where('id', '=', $ID)
+			->orderBy('match_detail_id', 'desc')
 		    ->paginate(10);
 	}
 
@@ -66,27 +67,54 @@ class PlayerDetailRepository
 		}
 	}
 
+	/**
+	 * Return entity object with player stats.
+	 * 
+	 * @param  int $ID 32 bit
+	 * @return object
+	 */
 	public function getStats($ID)
 	{
 		return new Stats($this->getStatsFromDatabase($ID));
 	}
 
+	/**
+	 * Calculate average stats with sql query.
+	 * 
+	 * @param  int $ID 32 bit ID
+	 * @return object
+	 */
 	public function getStatsFromDatabase($ID)
 	{
 		$stats = DB::table('player_detail')
 			->join('match_detail', 'player_detail.match_detail_id', '=', 'match_detail.id')
-		    ->select(DB::raw(
-		    	'avg(player_detail.gold_per_min) as gpm, 
-		    	avg(player_detail.xp_per_min) as xpm,
-		    	avg(player_detail.kills) as kills,
-		    	avg(player_detail.deaths) as deaths,
-		    	avg(player_detail.assists) as assists,
-		    	avg(player_detail.tower_damage) as towerDmg,
-		    	avg(player_detail.hero_damage) as heroDmg,
-		    	avg(player_detail.hero_healing) as heroHealing,
-		    	count(match_detail.duration) as totalMatches,
-		    	(max(match_detail.duration) * count(match_detail.duration)) as totalGameTime'
-		    ))
+		    ->select(DB::raw('
+		    	avg(player_detail.gold_per_min) as avgGpm, 
+		    	avg(player_detail.xp_per_min) as avgXpm,
+		    	avg(player_detail.kills) as avgKills,
+		    	avg(player_detail.deaths) as avgDeaths,
+		    	avg(player_detail.assists) as avgAssists,
+		    	avg(player_detail.tower_damage) as avgTowerDmg,
+		    	avg(player_detail.hero_damage) as avgHeroDmg,
+		    	avg(player_detail.hero_healing) as avgHeroHealing,
+		    	avg(player_detail.last_hits) as avgCreepKills,
+		    	avg(player_detail.denies) as avgCreepDenies,
+		    	avg(match_detail.duration) as avgGameTime,
+
+		    	max(player_detail.gold_per_min) as maxGpm,
+		    	max(player_detail.xp_per_min) as maxXpm,
+		    	max(player_detail.kills) as maxKills,
+		    	max(player_detail.deaths) as maxDeaths,
+		    	max(player_detail.assists) as maxAssists,
+		    	max(player_detail.tower_damage) as maxTowerDmg,
+		    	max(player_detail.hero_damage) as maxHeroDmg,
+		    	max(player_detail.hero_healing) as maxHeroHealing,
+		    	max(player_detail.last_hits) as maxCreepKills,
+		    	max(player_detail.denies) as maxCreepDenies,
+
+		    	sum(match_detail.duration) as totalGameTime,
+		    	count(match_detail.duration) as totalMatches
+		    '))
 		    ->where('player_detail.id', '=', $ID)
 		    ->get();
 

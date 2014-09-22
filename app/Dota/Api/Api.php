@@ -90,9 +90,3 @@ class Api
 		return $this->makeCall($url);
 	}
 }
-
-/*	public function multipleProfiles($id)
-	{
-		$this->urls['multipleProfiles'] = 'http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=' . $this->apiKey . '&steamids=' . explode(',', $id);
-		return $this;
-	}*/

@@ -18,17 +18,15 @@ class PlayerController extends BaseController {
 	 */
 	public function showPlayerSummeries($steamID)
 	{
-		$this->dota->saveID($steamID);
+		$this->dota->setUser($steamID);
 
 		if($this->dota->loadPlayer())
 		{
 			$player = $this->dota->getPlayerSummeries();
-
+			
 			$matches = $this->dota->getPaginatorForPlayer();
 
-			return View::make('player.summeries')
-		 	    ->with('player', $player)
-		 	    ->with('matches', $matches);
+			return View::make('player.summeries')->with('player', $player)->with('matches', $matches);
 		}
 
 		return Redirect::to('/')->with('message', 'Invalid Steam ID');
@@ -42,12 +40,10 @@ class PlayerController extends BaseController {
 	 */
 	public function loadPlayerSummeriesByAjax()
 	{
-		$this->dota->saveID(Input::get('steamID'));
+		$this->dota->setUser(Input::get('steamID'));
 
-	 	if($this->dota->loadPlayer())
-		{
-			return Response::json('Success');
-		}
-		return Response::json('Failed');
+		$response['status'] = $this->dota->loadPlayer();
+
+		return Response::json($response);
 	}
 }

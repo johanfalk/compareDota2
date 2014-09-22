@@ -5,7 +5,7 @@ use Dota\Api\Api;
 use Dota\Entities\Player;
 use Dota\Services\MatchService;
 use Dota\Services\PlayerService;
-use Dota\Services\IDService;
+use Dota\Tools\SteamIDConverter;
 
 /**
 * Service for the Steam api.
@@ -16,21 +16,15 @@ class Dota
 
 	private $matchService;
 
-	private $IDService;
-
 	private $playerService;
 
-	function __construct(
-		Api $api, 
-		MatchService $matchService, 
-		IDService $IDService,
-		PlayerService $playerService)
+	private $IDs;
+
+	function __construct(Api $api, MatchService $matchService, PlayerService $playerService)
 	{
 		$this->api = $api;
 	
 		$this->matchService = $matchService;
-
-		$this->IDService = $IDService;
 
 		$this->playerService = $playerService;
 	}
@@ -40,25 +34,25 @@ class Dota
 	 */
 	public function loadMatches()
 	{
-		if($IDs = $this->IDService->getAll())
+		if(!$this->IDs->isValid)
 		{
-			if(!$status = $this->matchService->matchesAreLoaded($IDs->matchID))
-			{
-				$matchIDs = $this->api->getMatchIDs($IDs->steam64ID);
+			return false;
+		}
 
-				$matchesToCallApi = $this->matchService->getMatchesToCallApi($matchIDs);
+		if(!$status = $this->matchService->matchesAreLoaded($this->IDs->matchID))
+		{
+			$matchIDs = $this->api->getMatchIDs($this->IDs->steam64ID);
 
-				$matchesFromApi = $this->api->getMatchesFromApi($matchesToCallApi);
+			$matchesToCallApi = $this->matchService->getMatchesToCallApi($matchIDs);
 
-				$this->matchService->putMatchesInDatabase($matchesFromApi);
+			$matchesFromApi = $this->api->getMatchesFromApi($matchesToCallApi);
 
-				$this->matchService->cacheLoadStatus($IDs->matchID);
-			}
+			$this->matchService->putMatchesInDatabase($matchesFromApi);
 
-			return $status;
+			$this->matchService->cacheLoadStatus($this->IDs->matchID);
 		}
 		
-		return false;
+		return true;
 	}
 
 	/**
@@ -68,24 +62,21 @@ class Dota
 	 */
 	public function getSteamProfile()
 	{
-		if(!$IDs = $this->IDService->getAll())
+		if($this->IDs->isValid)
 		{
-			return false;
+			if(Cache::has($this->IDs->steam64ID))
+			{
+				return Cache::get($this->IDs->steam64ID);
+			}
+			else if($profile = $this->api->oneProfile($this->IDs->steam64ID))
+			{
+				$profile->IDs = $this->IDs;
+
+				Cache::put($this->IDs->steam64ID, $profile, 20);
+
+				return $profile;
+			}
 		}
-
-		if(Cache::has($IDs->profileID))
-		{
-			return Cache::get($IDs->profileID);
-		}
-		else if($profile = $this->api->oneProfile($IDs->steam64ID))
-		{
-			$profile->IDs = $IDs;
-
-			Cache::put($IDs->profileID, $profile, 20);
-
-			return $profile;
-		}
-
 		return false;
 	}
 
@@ -98,24 +89,9 @@ class Dota
 	{
 		if($profile = $this->getSteamProfile())
 		{
-			$stats = $this->playerService->getStats($profile->IDs);
-			
-			$player = new Player($profile, $stats);
-			
-			return $player;
+			return new Player($profile, $this->playerService->getStats($this->IDs));
 		}
 		return false;
-	}
-
-	/**
-	 * Get multiple profiles.
-	 * 
-	 * @param  array $IDs
-	 * @return array      List of profile object
-	 */
-	public function getMultiplePlayerSummeries($IDs)
-	{
-		# code...
 	}
 
 	/**
@@ -140,9 +116,9 @@ class Dota
 	 */
 	public function getPaginatorForPlayer()
 	{
-		if($ID = $this->IDService->get('steam32ID'))
+		if($this->IDs->isValid)
 		{
-			return $this->playerService->getPaginator($ID);
+			return $this->playerService->getPaginator($this->IDs->steam32ID);
 		}
 		return false;
 	}
@@ -150,12 +126,12 @@ class Dota
 	/**
 	 * Save ID in session to access it all over the application
 	 * 
-	 * @param  int $steamID
+	 * @param  int $ID
 	 * @return boolean
 	 */
-	public function saveID($steamID)
+	public function setUser($ID)
 	{
-		return $this->IDService->save($steamID);
+		$this->IDs = new SteamIDConverter($ID);
 	}
 
 	/**

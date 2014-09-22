@@ -1,5 +1,4 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -65,24 +64,11 @@ Route::get(
  */
 Route::get('test', function() 
 {
-	$stats = DB::table('player_detail')
-		->join('match_detail', 'player_detail.match_detail_id', '=', 'match_detail.id')
-	    ->select(DB::raw(
-	    	'avg(player_detail.gold_per_min) as gpm, 
-	    	avg(player_detail.xp_per_min) as xpm,
-	    	avg(player_detail.kills) as kills,
-	    	avg(player_detail.deaths) as deaths,
-	    	avg(player_detail.assists) as assists,
-	    	avg(player_detail.tower_damage) as towerDmg,
-	    	avg(player_detail.hero_damage) as heroDmg,
-	    	avg(player_detail.hero_healing) as heroHealing,
-	    	count(match_detail.duration) as totalMatches,
-	    	(max(match_detail.duration) * count(match_detail.duration)) as totalGameTime'
-	    ))
-	    ->where('player_detail.id', '=', 51170241)
-	    ->get();
-
-	    return Response::json(array_shift($stats));
+	return PlayerDetail::with('matchDetail')
+	    ->with('hero')
+	    ->where('id', '=', 51170241)
+	    ->orderBy('match_detail_id', 'desc')
+	    ->paginate(10);
 });
 
 /**

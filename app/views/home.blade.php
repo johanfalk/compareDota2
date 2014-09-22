@@ -1,6 +1,6 @@
 @extends('default.layout')
 
-@section('mainMenu')
+@section('main-menu')
 	
 	<h2>Compare Dota 2</h2>
 
@@ -22,7 +22,7 @@
 
 	{{ Form::open(array('id' => 'steamIDForm')) }}
 
-	{{ Form::label('steamID', 'Steam ID') . Form::text('steamID') }}
+	{{ Form::text('steamID', NULL, array('placeholder' => 'Search by you steam ID')) }}
 	
 	{{ Form::submit('View') }}
 	
@@ -30,8 +30,6 @@
 	
 	{{ HTML::image('images/loading.gif', 'Loading', array('id' => 'loading-gif')); }}
 
-	<!--<h4>76561198011435968</h4>
-		<h4>76561198040172380</h4>-->
 	@if (Session::has('message'))
 		{{ Session::get('message') }}
 	@endif

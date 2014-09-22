@@ -11,8 +11,9 @@
 </head>
 <body>
 	
-	@yield('mainMenu')
+	@yield('main-menu')
 	@yield('header')
+	@yield('top-content')
 	@yield('content')
 
 </body>

@@ -1,4 +1,4 @@
-@section('mainMenu')
+@section('main-menu')
 
 	<h4>76561198011435969</h4>
 	<h4>76561198040172380</h4>
@@ -9,4 +9,4 @@
 		<li>News</li>
 	</ul>
 @stop
-@yield('mainMenu')
+@yield('main-menu')
